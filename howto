@@ -1,0 +1,66 @@
+1) Docker consist of Docker Engine, compose and machine.
+
+to check the releases do
+
+docker --version
+
+docker-compose --version
+
+docker-machine --version
+
+2) To download images
+
+docker search ubuntu
+
+docker pull ubuntu:12.04
+
+3) if you no longer need an image you can remove it
+
+docker images
+
+docker rmi <id>
+
+4) to list running containers
+
+docker ps
+
+docker ps -l (includer non running contrainers)
+
+docker ps -a (list local containers)
+
+5) to connect do
+
+docker attach <id>
+
+(if you control-D you will stop the container)
+
+docker stop <id>
+
+docker ps -l (list stopped container)
+
+docker start <id>
+
+docker rm <id>  (removes only the container, not the image)
+
+6) to boot a new container from an image
+
+docker create <image id>
+
+7) For the downloaded ubuntu image try:
+
+docker run -t -i ubuntu:16.10 /bin/bash
+
+8) for networks
+
+docker network ls
+
+docker run -t -i 
+
+9) save a container to an image
+
+docker commit <container_ID> my_img
+
+docker push myusername/my_first_image
+
+
+10) to detach and leave the container runnint do ctrl-p ctrl-q

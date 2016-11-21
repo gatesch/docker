@@ -1,0 +1,85 @@
+- name: Run Docker containers
+  hosts: localhost
+  tasks:
+  - name: web1 container creation
+    docker_container:
+      name: web1
+      image: ubuntu-tomcat
+      privileged: true
+      state: started
+
+  - name: web2 container creation
+    docker_container:
+      name: web2
+      image: ubuntu-tomcat
+      privileged: true
+      state: started
+
+
+  - name: haproxy master container creation
+    docker_container:
+      name: haproxy1
+      image: haproxy-master
+      privileged: true
+      state: started
+
+  - name: Oracle DB container
+    docker_container:
+      name: oracle
+      image: oracle
+      privileged: true
+      volumes: /home/alejandro/Downloads/XE:/u01/app/oracle/oradata/XE:rw
+      state: started
+
+  - name: haproxy backup container creation
+    docker_container:
+      name: haproxy2
+      image: haproxy-backup
+      privileged: true
+      state: started
+
+- name: install tomcat6 in Docker
+  hosts: webservers
+#  sudo: True
+  tasks:
+#  - name: Update repositories if older than 2 hours
+#    apt:
+#      update_cache: yes
+#      cache_valid_time: 7200
+  - name: Install Tomcat6
+    apt:
+      name: tomcat6
+      state: present
+
+  - name: Copy and extract file
+    unarchive: src=root.tar dest=/var/lib/tomcat6/webapps/ROOT/
+
+- name: Customize web1 container
+  hosts: web1
+  tasks:
+
+  - name: Create the web site
+    copy: src=portada1.html dest=/var/lib/tomcat6/webapps/ROOT/portada.html backup=yes
+
+  - service: name=tomcat6 state=restarted
+
+- name: Customize web2 container
+  hosts: web2
+  tasks:
+
+  - name: Create the web site
+    copy: src=portada2.html dest=/var/lib/tomcat6/webapps/ROOT/portada.html backup=yes
+
+  - service: name=tomcat6 state=restarted
+
+- name: Customize haproxy container
+  hosts: haproxy
+  tasks:
+
+  - name: Start HAPROXY
+
+    service: name=haproxy state=started
+
+  - name: Start Keepalived
+
+    service: name=keepalived state=started
