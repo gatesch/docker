@@ -8,6 +8,7 @@
       privileged: true
       state: started
 
+---- error goes here
   - name: web2 container creation
     docker_container:
       name: web2
